@@ -1,0 +1,46 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<style>
+	canvas {
+		border: 5px solid black;
+		border-radius: 15px;
+	}
+	</style>
+	<script>
+	var socket = io.connect('/');
+	var canvas, context;
+	$(function() {
+		canvas = document.getElementById('canvas')
+		context = canvas.getContext('2d')
+		canvas.addEventListener("click", getPosition, false)
+	})
+
+	function getPosition(event)	{
+		var x = event.pageX
+		var y = event.pageY
+		x -= canvas.offsetLeft
+		y -= canvas.offsetTop
+	  socket.emit('circle', {x: x, y:y})
+	}
+
+	function drawCircle(x,y) {
+		context.beginPath()
+		context.arc(x, y, 10, 0, 2 * Math.PI, false)
+		context.fillStyle = 'green'
+		context.fill()
+		context.lineWidth = 2
+		context.strokeStyle = '#003300'
+		context.stroke()
+	}
+	socket.on('circle', function (i) {
+		drawCircle(i.x, i.y)
+	})
+	</script>
+</head>
+<body>
+	<h1>Click to place a circle</h1>
+	<canvas id="canvas" width="600" height="200"></canvas>
+</body>
+</html>
