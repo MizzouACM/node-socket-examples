@@ -1,0 +1,28 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	var socket = io.connect('/');
+	$(function() {
+		$('#input').keypress(function(e) { //when you press ANY key on the keyboard while typing in the input
+			if(e.which == 13) { //if you pressed enter
+				message = $(this).val(); //get the value of the textfield
+				$(this).val(""); //clear the textfield
+				$(this).attr("placeholder", "Type a message"); //the placeholder needs to change after the name is set
+				socket.emit('message', {message: message}); //send off the message (you don't need to tell the server your name since it stores it)
+				$(this).focus(); //select the input field again for faster messaging
+			}
+		});
+		socket.on('message', function (res) { //when a message is recieved
+			$('#messages').prepend("<div><b>"+res.name+"</b>: "+res.message+"</div>"); //add it to the list of messages
+		});
+	});
+	</script>
+</head>
+<body>
+	<h1>Real time chat</h1>
+	<input placeholder="Type your name then press enter" style="width: 90%;margin:10px;"type="text" id="input">
+	<div id="messages"></div>
+</body>
+</html>
