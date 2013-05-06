@@ -21,8 +21,3 @@ io.configure(function () {
 app.get('/', function (req, res) { //when you visit the homepage
   res.render('client.hbs'); //display the client.hbs file (no variables passed in) 
 });
-
-
-io.sockets.on('connection', function (socket) { //new socket connection established
-  
-});
